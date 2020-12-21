@@ -55,6 +55,6 @@ For convenience at this point, python version doesn't include support for multi-
 
 ## Next Step's
 
-[] - Support for multi-tempo
+- [ ] Support for multi-tempo
 
-[] - Reduce the number of dependencies
+- [ ] Reduce the number of dependencies
