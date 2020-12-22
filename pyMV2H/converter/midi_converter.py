@@ -1,7 +1,7 @@
 from pyMV2H.converter.base import BaseConverter
 import pretty_midi
 from mido import MidiFile
-from pyMV2H.utils.file_pojo import TATUM, NOTE, MIDI_TIME_SIGNATURE, HIERARCHY, KEY
+from pyMV2H.utils.pojos import TATUM, NOTE, MIDI_TIME_SIGNATURE, HIERARCHY, KEY
 
 
 class MidiConverter(BaseConverter):

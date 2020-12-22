@@ -3,6 +3,7 @@ pyMV2H
 Usage:
   pyMV2H hello
   pyMV2H midi_converter -i <input_dir> -o <output_dir>
+  pyMV2H compare_files -i <reference_file> -t <transcription_file>
   pyMV2H -h | --help
   pyMV2H --version
 Options:
@@ -10,6 +11,7 @@ Options:
   --version                         Show version.
   -i --input                        The input file
   -o --output                       The output file
+  -t                                The transcription file
 Examples:
   pyMV2H hello
 Help:

@@ -12,3 +12,4 @@ CHORD = namedtuple('CHORD', 'time chord')
 
 
 MIDI_TIME_SIGNATURE = namedtuple('TIME_SIGNATURE', 'numerator denominator')
+

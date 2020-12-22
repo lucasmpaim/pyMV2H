@@ -1,4 +1,12 @@
-from pyMV2H.utils.file_pojo import NOTE, TATUM, KEY, HIERARCHY
+from pyMV2H.utils.pojos import NOTE, TATUM, KEY, HIERARCHY
+
+
+def need_read(fn):
+    def inner(*args, **kwargs):
+        music_instance = args[0]
+        music_instance.read_if_needed()
+        return fn(*args, **kwargs)
+    return inner
 
 
 class Music:
@@ -29,6 +37,7 @@ class Music:
     def parse_line(self, line):
         if line.startswith('Note'):
             self.__parse_note__(line)
+            self.__notes__.sort(key=lambda a: a.on_val)
         if line.startswith('Key'):
             self.__parse_key__(line)
         if line.startswith('Hierarchy'):
@@ -60,3 +69,22 @@ class Music:
             # time is optional on original description, set it to zero by default
             args.append(0)
         self.__hierarchy__.append(HIERARCHY(*args))
+
+    @need_read
+    def get_notes_grouped_by_onset(self):
+        notes = list()
+
+        most_recent_list = list()
+        most_recent_value_onset_time = self.__notes__[0].on
+        most_recent_list.append(self.__notes__[0])
+        notes.append(most_recent_list)
+
+        for note in self.__notes__[1:]:
+            if note.on == most_recent_value_onset_time:
+                most_recent_list.append(note)
+            else:
+                notes.append(most_recent_list)
+                most_recent_list = list()
+                most_recent_value_onset_time = note.on
+                most_recent_list.append(note)
+        return notes

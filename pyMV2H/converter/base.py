@@ -2,7 +2,7 @@ import abc
 import os
 from ctypes import ArgumentError
 # from math import floor
-from pyMV2H.utils.file_pojo import HIERARCHY
+from pyMV2H.utils.pojos import HIERARCHY
 from pyMV2H.utils.midi_meta_tonic_map import key_signature_decode
 
 

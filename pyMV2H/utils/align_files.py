@@ -1,9 +1,161 @@
-from fastdtw import fastdtw
+from functools import reduce
 
+import numpy as np
+
+from pyMV2H.metrics import f1
 from pyMV2H.reader.parse_file import Music
+from pyMV2H.utils.algorithm_config import NON_ALIGNMENT_PENALTY
+from pyMV2H.utils.alignment_node import AlignmentNode
 
 
 def align_files(provided_file: Music, transcription_file: Music):
-    provided_file.read_if_needed()
-    transcription_file.read_if_needed()
+    """
+    Align based on DTW algorithm
+    """
+    alignment_nodes = _get_possible_alignments(provided_file, transcription_file)
+    total = 0
+    best_alignment = list()
+    for node in alignment_nodes:
+        total += node.count
 
+    # TODO: FINISH THIS METHOD
+    for node_aligment in alignment_nodes:
+        for j in range(node_aligment.count):
+            alignment = node_aligment.get_alignment(j)
+            compare = 0  # evaluate transcription
+            if compare > 0:
+                best_alignment = node_aligment
+    print(total)
+
+
+def _get_possible_alignments(provided_file: Music, transcription_file: Music):
+    previous_cells = _get_align_matrix(provided_file, transcription_file)
+    ARRAY_SIZE = len(previous_cells)
+    cache_matrix = create_list_of_size(ARRAY_SIZE, lambda: create_list_of_size(ARRAY_SIZE, list))
+    return _get_possible_alignments_from_matrix(
+        len(previous_cells) - 1,
+        len(previous_cells[0]) - 1,
+        previous_cells,
+        cache_matrix
+    )
+
+
+def _get_possible_alignments_from_matrix(i: int, j: int, matrix: list, cache: list):
+    alignments = cache[i][j]
+    if not len(alignments) == 0:
+        return alignments
+
+    if i == 0 and j == 0:
+        return alignments
+
+    for previous_cell in matrix[i][j]:
+        if previous_cell == -1:
+            # This transcription note was aligned with nothing in the ground truth.
+            alignments.append(
+                AlignmentNode(_get_possible_alignments_from_matrix(i - 1, j, matrix, cache), -1)
+            )
+        elif previous_cell == 1:
+            # This ground truth note was aligned with nothing in the transcription.
+            for node in _get_possible_alignments_from_matrix(i, j - 1, matrix, cache):
+                if node.value != -1:
+                    alignments.append(node)
+        else:
+            # The current transcription and ground truth notes were aligned.
+            alignments.append(
+                AlignmentNode(_get_possible_alignments_from_matrix(i - 1, j - 1, matrix, cache), j - 1)
+            )
+    return alignments
+
+
+def _get_align_matrix(provided_file: Music, transcription_file: Music):
+    provided_notes = provided_file.get_notes_grouped_by_onset()
+    transcription_notes = transcription_file.get_notes_grouped_by_onset()
+
+    p_notes_map = _get_note_pitch_maps(provided_notes)
+    t_notes_map = _get_note_pitch_maps(transcription_notes)
+
+    ARRAY_SIZE = (len(provided_notes) + 1, len(transcription_notes) + 1)
+
+    previous_cells = create_list_of_size(ARRAY_SIZE[0], lambda: create_list_of_size(ARRAY_SIZE[1], list))
+    distances = np.zeros(ARRAY_SIZE)
+    distances[0] = np.full(ARRAY_SIZE[1], np.Inf)
+    distances[0][0] = 0.
+
+    for i in range(1, ARRAY_SIZE[1]):
+        distances[i][0] = np.Inf
+
+    for j in range(1, ARRAY_SIZE[1]):
+        for i in range(1, ARRAY_SIZE[0]):
+            distance = get_distance(p_notes_map[i - 1], t_notes_map[j - 1])
+
+            distance_i_1 = distances[i - 1][j] + NON_ALIGNMENT_PENALTY
+            distance_j_1 = distances[i][j - 1] + NON_ALIGNMENT_PENALTY
+            distance_i_j_1 = distances[i - 1][j - 1] + distance
+
+            min_distance = min(distance_j_1, distance_i_1, distance_i_j_1)
+            previous_cell = previous_cells[i][j]
+            if distance_i_1 == min_distance:
+                previous_cell.append(-1)
+            elif distance_j_1 == min_distance:
+                previous_cell.append(1)
+            else:
+                previous_cell.append(0)
+            distances[i][j] = min_distance
+    return previous_cells
+
+
+def _get_note_pitch_maps(notes_lists):
+    maps = list()
+    for note_list in notes_lists:
+        notes_dict = dict()
+        for note in note_list:
+            if note.pitch not in notes_dict:
+                notes_dict[note.pitch] = 1
+            else:
+                notes_dict[note.pitch] = note[note.pitch] + 1
+        maps.append(notes_dict)
+    return maps
+
+
+def get_distance(p_note_map, t_note_map):
+    """
+    Get the distance between a given ground truth note set and a possible transcription note set.
+
+    :param p_note_map: The pitch map of a ground truth note set.
+    :param t_note_map: he pitch map of a possible transcription note set.
+    :return: The alignment score. 1 - its F-measure.
+    """
+    true_positives = 0
+    false_positives = 0
+
+    for t_key in t_note_map.keys():
+        count = t_note_map[t_key]
+        if t_key in p_note_map:
+            p_count = p_note_map[t_key]
+            true_positives += min(count, p_count)
+            if count > p_count:
+                false_positives += min(count, p_count)
+        else:
+            false_positives += count
+
+    if true_positives == 0:
+        return 1.0
+
+    p_count = reduce(lambda a, b: a + b, p_note_map.values(), 0)
+    false_negatives = p_count - true_positives
+    return 1 - f1.f1_score(true_positives, false_positives, false_negatives)
+
+
+def create_list_of_size(size: int, value) -> list:
+    """
+    Helper function to create an list of size x with initial value
+    Use this method only for dynamic lists, make preference for numpy arrays initializers like:
+    np.zeros(SHAPE) etc.
+    :param size: size of the list
+    :param value: lambda function to initialize the value
+    :return: the list of size x with all elements equal to return of value
+    """
+    list_to_return = list()
+    for _ in range(size):
+        list_to_return.append(value())
+    return list_to_return
