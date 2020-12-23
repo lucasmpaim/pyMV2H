@@ -57,7 +57,7 @@ Please, cite the original article:
 ```
 
 # Important
-For convenience at this point, python version doesn't include support for multi-tempo or chords, this repo is implemented for a study of MIDI AMT's algorithms, and the original repo doesn't extract this info from MIDI files. [ref.](https://github.com/apmcleod/MV2H/blame/master/README.md#L63)
+For convenience at this point, python version doesn't include support for multi-tempo or chords, this repo is implemented for MIDI AMT's algorithms research, and the original repo doesn't extract this info from MIDI files. [ref.](https://github.com/apmcleod/MV2H/blame/master/README.md#L63)
 
 
 ## Next Step's
