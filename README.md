@@ -22,6 +22,7 @@ Options:
   -o --output                       The output file
   -t                                The transcription file
   -g                                The reference file
+  -a                                Align both files
 Examples:
   pyMV2H hello
 Help:
