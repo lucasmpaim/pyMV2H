@@ -19,3 +19,11 @@ for it to be counted as a match.
 Measured in milliseconds.
 """
 GROUPING_EPSILON = 50
+
+"""
+The difference in duration between two {@link mv2h.objects.Note}s for their value
+to be counted as a match.
+
+Measured in milliseconds.
+"""
+DURATION_DELTA = 100

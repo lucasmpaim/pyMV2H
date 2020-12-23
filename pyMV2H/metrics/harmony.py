@@ -1,6 +1,4 @@
-from .f1 import f1_score
 from ..reader.parse_file import Music
-from ..utils.matches import note_match
 from ..utils.pojos import KEY
 from ..utils.remove_duplicates import remove_duplicates_keys
 

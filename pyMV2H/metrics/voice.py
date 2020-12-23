@@ -6,13 +6,15 @@ from ..utils.pojos import NOTE
 from ..utils.voice import Voice, NoteCluster
 
 
-def voice_score(p_music: Music, t_music: Music):
+def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):
     p_music.read_if_needed()
     t_music.read_if_needed()
 
     provided_voices = create_list_of_size(len(p_music.__voices__), lambda: Voice())
     transcription_voices = create_list_of_size(len(t_music.__voices__), lambda: Voice())
     p_note_mapping = dict()
+
+    match_mapping = list()
 
     for t_note in t_music.__notes__:
         for p_note in p_music.__notes__:
@@ -73,14 +75,28 @@ def voice_score(p_music: Music, t_music: Music):
                     false_positives += (connection_false_positives / (out_weight * len(note_cluster.notes)))
                     false_negatives += (connection_false_negatives / (out_weight * len(note_cluster.notes)))
 
-                # # List of notes which are linked to in the original ground truth (including multi-pitch non-TPs)
-                # next_original_p_notes = list()
-                # for next_p_cluster in p_music.__voices__[p_note.voice].get_node_cluster(p_note).next_clusters:
-                #     next_original_p_notes += next_p_cluster.notes
-                #
-                # # Both are the end of a voice
-                # if len(next_original_p_notes) == 0 and len(transcription_notes) == 0:
-                #
-                # pass
+                if return_match_mapping:
+                    # List of notes which are linked to in the original ground truth (including multi-pitch non-TPs)
+                    next_original_p_notes = list()
+                    for next_p_cluster in p_music.__voices__[p_note.voice].get_cluster(p_note).next_clusters:
+                        next_original_p_notes += next_p_cluster.notes
 
-    return f1_score(true_positives, false_positives, false_negatives)
+                    # Both are the end of a voice
+                    if len(next_original_p_notes) == 0 and len(transcription_notes) == 0:
+                        match_mapping.append(t_note)
+                    else:
+                        match = False
+                        for p_next_note in next_original_p_notes:
+                            for t_next_note in transcription_notes:
+                                # Check if at least one original ground truth connection was correct
+                                if note_match(p_next_note, t_next_note):
+                                    match = True
+                                    match_mapping.append(t_note)
+                                    break
+                            if match:
+                                break
+
+    if return_match_mapping:
+        return f1_score(true_positives, false_positives, false_negatives), match_mapping
+    else:
+        return f1_score(true_positives, false_positives, false_negatives)
