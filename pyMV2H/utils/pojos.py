@@ -18,3 +18,6 @@ MV2H_WEIGHTS = namedtuple(
     'multi_pitch voice metrical value_detection harmonic',
     defaults=[1] * 5
 )
+
+
+GROUPING = namedtuple('GROUPING', 'start_time end_time')

@@ -1,18 +1,16 @@
 from .f1 import f1_score
 from ..reader.parse_file import Music
-from ..utils.notes_match import match
+from ..utils.matches import note_match
 from ..utils.pojos import KEY
+from ..utils.remove_duplicates import remove_duplicates_keys
 
 
 def harmony_score(p_music: Music, t_music: Music):
     p_music.read_if_needed()
     t_music.read_if_needed()
 
-    _remove_duplicates_keys(p_music)
-    _remove_duplicates_keys(t_music)
-
-    p_music.__keys__.sort(key=lambda element: element.time)
-    t_music.__keys__.sort(key=lambda element: element.time)
+    remove_duplicates_keys(p_music)
+    remove_duplicates_keys(t_music)
 
     if len(p_music.__keys__) == 0:
         # TODO: return chord progression score
@@ -90,18 +88,3 @@ def _get_key_score(p_note: KEY, t_note: KEY) -> float:
         return 0.2
 
     return 0.
-
-
-def _remove_duplicates_keys(music: Music):
-    """
-    Remove duplicate keys based on time, with this we don't need a OrderedSet
-    :param music: Music to remove the duplicate keys
-    """
-    copy_keys = list(music.__keys__)
-    times = list()
-    for key in copy_keys:
-        if key.time in times:
-            copy_keys.remove(key)
-        else:
-            times.append(key.time)
-    music.__keys__ = copy_keys

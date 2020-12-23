@@ -11,3 +11,11 @@ counted as a match.
 Measured in milliseconds.
 """
 ONSET_DELTA = 50
+
+"""
+The difference in time between beginning and end times of a {@link mv2h.objects.meter.Grouping}
+for it to be counted as a match.
+
+Measured in milliseconds.
+"""
+GROUPING_EPSILON = 50

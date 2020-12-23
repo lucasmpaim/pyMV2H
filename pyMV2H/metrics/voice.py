@@ -1,7 +1,7 @@
 from .f1 import f1_score
 from ..reader.parse_file import Music
 from ..utils.align_files import create_list_of_size
-from ..utils.notes_match import match
+from ..utils.matches import note_match
 from ..utils.pojos import NOTE
 from ..utils.voice import Voice, NoteCluster
 
@@ -16,7 +16,7 @@ def voice_score(p_music: Music, t_music: Music):
 
     for t_note in t_music.__notes__:
         for p_note in p_music.__notes__:
-            if match(t_note, p_note):
+            if note_match(t_note, p_note):
                 # Found a match
                 p_note_mapping[t_note] = p_note
                 provided_voices[p_note.voice].add_note(note=p_note)
@@ -59,7 +59,7 @@ def voice_score(p_music: Music, t_music: Music):
 
                 for next_t_note in transcription_notes:
                     for next_p_note in next_p_notes_final:
-                        if match(next_t_note, next_p_note):
+                        if note_match(next_t_note, next_p_note):
                             connection_true_positives += 1
                             break
 

@@ -1,5 +1,5 @@
 from .f1 import f1_score
-from ..utils.notes_match import match
+from ..utils.matches import note_match
 
 
 def multi_pitch_accuracy(p_notes: list, t_notes: list):
@@ -7,7 +7,7 @@ def multi_pitch_accuracy(p_notes: list, t_notes: list):
 
     for t_note in t_notes:
         for p_note in p_notes:
-            if match(t_note, p_note):
+            if note_match(t_note, p_note):
                 # Found a match
                 true_positives += 1
                 break
