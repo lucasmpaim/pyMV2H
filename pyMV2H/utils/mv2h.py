@@ -46,12 +46,56 @@ class MV2H:
     @property
     def mv2h(self) -> float:
         return (
-            self.meter +
-            self.voice +
-            self.harmony +
-            self.note_value +
-            self.multi_pitch
-        ) / self.__sum_weights__()
+                       self.meter +
+                       self.voice +
+                       self.harmony +
+                       self.note_value +
+                       self.multi_pitch
+               ) / self.__sum_weights__()
+
+    def __gt__(self, other):
+        other: MV2H = other
+        if self.mv2h != other.mv2h:
+            return self.mv2h > other.mv2h
+
+        if self.multi_pitch != other.multi_pitch:
+            return self.multi_pitch > other.multi_pitch
+
+        if self.voice != other.voice:
+            return self.voice > other.voice
+
+        if self.meter != other.meter:
+            return self.meter > other.meter
+
+        if self.note_value != other.note_value:
+            return self.note_value > other.note_value
+
+        if self.harmony != other.harmony:
+            return self.harmony > other.harmony
+
+        return False
+
+    def __lt__(self, other):
+        other: MV2H = other
+        if self.mv2h != other.mv2h:
+            return self.mv2h < other.mv2h
+
+        if self.multi_pitch != other.multi_pitch:
+            return self.multi_pitch < other.multi_pitch
+
+        if self.voice != other.voice:
+            return self.voice < other.voice
+
+        if self.meter != other.meter:
+            return self.meter < other.meter
+
+        if self.note_value != other.note_value:
+            return self.note_value < other.note_value
+
+        if self.harmony != other.harmony:
+            return self.harmony < other.harmony
+
+        return False
 
     def __repr__(self):
         return f'''

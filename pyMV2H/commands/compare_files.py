@@ -1,15 +1,20 @@
 from .base import Base
 from ..metrics.mv2h import mv2h
+from ..utils.align_files import align_files
 
 
 class CompareFilesCommand(Base):
 
     def run(self):
-        from ..reader.parse_file import Music
+        from pyMV2H.utils.music import Music
 
-        reference_file = Music(self.options['<reference_file>'])
-        transcription_file = Music(self.options['<transcription_file>'])
-        # align_files(reference_file, transcription_file)
+        reference_file = Music.from_file(self.options['<reference_file>'])
+        transcription_file = Music.from_file(self.options['<transcription_file>'])
         reference_file.read_if_needed()
         transcription_file.read_if_needed()
-        print(mv2h(reference_file, transcription_file))
+
+        if self.options['-a']:
+            _, mv2h_metric = align_files(reference_file, transcription_file)
+            print(mv2h_metric)
+        else:
+            print(mv2h(reference_file, transcription_file))

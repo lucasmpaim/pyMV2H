@@ -3,29 +3,38 @@ from functools import reduce
 import numpy as np
 
 from pyMV2H.metrics import f1
-from pyMV2H.reader.parse_file import Music
+from pyMV2H.utils.music import Music
 from pyMV2H.utils.algorithm_config import NON_ALIGNMENT_PENALTY
 from pyMV2H.utils.alignment_node import AlignmentNode
+from pyMV2H.utils.mv2h import MV2H
 
 
 def align_files(provided_file: Music, transcription_file: Music):
     """
     Align based on DTW algorithm
     """
+    from pyMV2H.metrics.mv2h import mv2h
+
+    provided_file.read_if_needed()
+    transcription_file.read_if_needed()
+
     alignment_nodes = _get_possible_alignments(provided_file, transcription_file)
     total = 0
-    best_alignment = list()
+    best = MV2H(0., 0., 0., 0., 0.)
+    best_music = None
+
     for node in alignment_nodes:
         total += node.count
 
-    # TODO: FINISH THIS METHOD
     for node_aligment in alignment_nodes:
         for j in range(node_aligment.count):
             alignment = node_aligment.get_alignment(j)
-            compare = 0  # evaluate transcription
-            if compare > 0:
-                best_alignment = node_aligment
-    print(total)
+            shifted_music = transcription_file.align(provided_file, alignment)
+            candidate: MV2H = mv2h(provided_file, shifted_music)
+            if candidate > best:
+                best = candidate
+                best_music = shifted_music
+    return best_music, best
 
 
 def _get_possible_alignments(provided_file: Music, transcription_file: Music):

@@ -3,7 +3,7 @@ from pyMV2H.metrics.meter import meter_score
 from pyMV2H.metrics.multi_pitch import multi_pitch_accuracy
 from pyMV2H.metrics.note_value import note_value_score
 from pyMV2H.metrics.voice import voice_score
-from pyMV2H.reader.parse_file import Music
+from pyMV2H.utils.music import Music
 from pyMV2H.utils.mv2h import MV2H
 from pyMV2H.utils.pojos import MV2H_WEIGHTS
 

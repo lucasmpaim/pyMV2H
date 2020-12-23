@@ -12,15 +12,16 @@ Using by shell:
 ```shell
 pyMV2H
 Usage:
-  pyMV2H hello
   pyMV2H midi_converter -i <input_dir> -o <output_dir>
+  pyMV2H compare_files -g <reference_file> -t <transcription_file> [-a]
   pyMV2H -h | --help
   pyMV2H --version
 Options:
   -h --help                         Show this screen.
   --version                         Show version.
-  -i --input                        The input file
   -o --output                       The output file
+  -t                                The transcription file
+  -g                                The reference file
 Examples:
   pyMV2H hello
 Help:
@@ -31,11 +32,11 @@ Help:
 Using by python code:
 
 ```python
-from pyMV2H.reader.parse_file import Music
+from pyMV2H.utils.music import Music
 from pyMV2H.metrics.mv2h import mv2h
 
-reference_file = Music('<reference_file_dir>')
-transcription_file = Music('<transcription_file_dir>')
+reference_file = Music.from_file('<reference_file_dir>')
+transcription_file = Music.from_file('<transcription_file_dir>')
 
 print(mv2h(reference_file, transcription_file))
 ```
@@ -69,3 +70,5 @@ For convenience at this point, python version doesn't include support for multi-
 - [ ] MusicXML parser
 
 - [ ] Write unit tests
+
+- [ ] Refactor code to be more pythonic

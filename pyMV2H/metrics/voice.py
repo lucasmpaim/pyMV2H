@@ -1,9 +1,8 @@
 from .f1 import f1_score
-from ..reader.parse_file import Music
+from pyMV2H.utils.music import Music
 from ..utils.align_files import create_list_of_size
 from ..utils.matches import note_match
-from ..utils.pojos import NOTE
-from ..utils.voice import Voice, NoteCluster
+from ..utils.voice import Voice
 
 
 def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):

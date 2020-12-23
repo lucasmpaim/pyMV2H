@@ -1,5 +1,5 @@
 from .f1 import f1_score
-from ..reader.parse_file import Music
+from pyMV2H.utils.music import Music
 from ..utils.matches import grouping_match
 from ..utils.pojos import GROUPING, HIERARCHY, TATUM
 from ..utils.remove_duplicates import remove_duplicates_tatums, remove_duplicates_hierarchy

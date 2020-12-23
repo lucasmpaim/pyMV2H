@@ -1,4 +1,4 @@
-from pyMV2H.reader.parse_file import Music
+from pyMV2H.utils.music import Music
 
 
 def remove_duplicates_keys(music: Music):

@@ -1,4 +1,4 @@
-from ..reader.parse_file import Music
+from pyMV2H.utils.music import Music
 from ..utils.pojos import KEY
 from ..utils.remove_duplicates import remove_duplicates_keys
 

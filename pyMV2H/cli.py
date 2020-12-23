@@ -1,9 +1,8 @@
 """"
 pyMV2H
 Usage:
-  pyMV2H hello
   pyMV2H midi_converter -i <input_dir> -o <output_dir>
-  pyMV2H compare_files -g <reference_file> -t <transcription_file>
+  pyMV2H compare_files -g <reference_file> -t <transcription_file> [-a]
   pyMV2H -h | --help
   pyMV2H --version
 Options:
@@ -12,6 +11,7 @@ Options:
   -o --output                       The output file
   -t                                The transcription file
   -g                                The reference file
+  -a                                Align both files
 Examples:
   pyMV2H hello
 Help:

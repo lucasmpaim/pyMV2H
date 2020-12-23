@@ -1,6 +1,6 @@
 from pyMV2H.metrics.multi_pitch import multi_pitch_accuracy
 from pyMV2H.metrics.voice import voice_score
-from pyMV2H.reader.parse_file import Music
+from pyMV2H.utils.music import Music
 from pyMV2H.utils.algorithm_config import DURATION_DELTA
 from pyMV2H.utils.pojos import NOTE
 
