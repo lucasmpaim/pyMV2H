@@ -4,56 +4,62 @@ from pyMV2H.utils.pojos import MV2H_WEIGHTS
 class MV2H:
 
     def __init__(self, multi_pitch, voice, harmony, meter, note_value, weights=MV2H_WEIGHTS()):
-        self.multi_pitch = multi_pitch
-        self.voice = voice
-        self.harmony = harmony
-        self.meter = meter
-        self.note_value = note_value
-        self.weights = weights
+        self.__multi_pitch__ = multi_pitch
+        self.__voice__ = voice
+        self.__harmony__ = harmony
+        self.__meter__ = meter
+        self.__note_value__ = note_value
+        self.__weights__ = weights
 
-    def __sum_heights__(self) -> float:
+    def __sum_weights__(self) -> float:
         return (
-                self.weights.multi_pitch +
-                self.weights.voice +
-                self.weights.harmonic +
-                self.weights.metrical +
-                self.weights.note_value
+                self.__weights__.multi_pitch +
+                self.__weights__.voice +
+                self.__weights__.harmonic +
+                self.__weights__.metrical +
+                self.__weights__.note_value
         )
 
-    def update_heights(self, heights: MV2H_WEIGHTS):
-        self.weights = heights
+    def update_weights(self, weights: MV2H_WEIGHTS):
+        self.__weights__ = weights
 
-    def __updated__multi_pitch__(self) -> float:
-        return self.multi_pitch * self.weights.multi_pitch
+    @property
+    def multi_pitch(self) -> float:
+        return self.__multi_pitch__ * self.__weights__.multi_pitch
 
-    def __updated__voice__(self) -> float:
-        return self.voice * self.weights.voice
+    @property
+    def voice(self) -> float:
+        return self.__voice__ * self.__weights__.voice
 
-    def __updated__harmony__(self) -> float:
-        return self.harmony * self.weights.harmonic
+    @property
+    def harmony(self) -> float:
+        return self.__harmony__ * self.__weights__.harmonic
 
-    def __updated_meter__(self) -> float:
-        return self.meter * self.weights.metrical
+    @property
+    def meter(self) -> float:
+        return self.__meter__ * self.__weights__.metrical
 
-    def __updated_note_value__(self) -> float:
-        return self.note_value * self.weights.note_value
+    @property
+    def note_value(self) -> float:
+        return self.__note_value__ * self.__weights__.note_value
 
     @property
     def mv2h(self) -> float:
         return (
-            self.__updated_meter__() +
-            self.__updated__voice__() +
-            self.__updated__harmony__() +
-            self.__updated_note_value__() +
-            self.__updated__multi_pitch__()
-        ) / self.__sum_heights__()
+            self.meter +
+            self.voice +
+            self.harmony +
+            self.note_value +
+            self.multi_pitch
+        ) / self.__sum_weights__()
 
     def __repr__(self):
         return f'''
-Multi-pitch:    {self.__updated__multi_pitch__()}
-Voice:          {self.__updated__voice__()}
-Meter:          {self.__updated_meter__()}
-Value:          {self.__updated_note_value__()}
-Harmony:        {self.__updated__harmony__()}
+Multi-pitch:    {self.multi_pitch}
+Voice:          {self.voice}
+Meter:          {self.meter}
+Value:          {self.note_value}
+Harmony:        {self.harmony}
 MV2H:           {self.mv2h}
+WEIGHTS:        {self.__weights__}
         '''

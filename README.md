@@ -31,8 +31,13 @@ Help:
 Using by python code:
 
 ```python
-from pyMV2H.metrics import f1
-f1.f1_score(0, 0, 0)
+from pyMV2H.reader.parse_file import Music
+from pyMV2H.metrics.mv2h import mv2h
+
+reference_file = Music('<reference_file_dir>')
+transcription_file = Music('<transcription_file_dir>')
+
+print(mv2h(reference_file, transcription_file))
 ```
 
 # Citation
