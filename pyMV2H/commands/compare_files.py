@@ -1,5 +1,6 @@
 from .base import Base
 from ..metrics import multi_pitch
+from ..metrics.harmony import harmony_score
 from ..metrics.mv2h import mv2h
 from ..metrics.voice import voice_score
 
@@ -19,4 +20,5 @@ class CompareFilesCommand(Base):
             f'Multi-Pitch: {multi_pitch.multi_pitch_accuracy(reference_file.__notes__, transcription_file.__notes__)}'
         )
         print(f'Voice: {voice_score(reference_file, transcription_file)}')
+        print(f'Harmony: {harmony_score(reference_file, transcription_file)}')
         print(f'MV2H: {mv2h(reference_file, transcription_file)}')

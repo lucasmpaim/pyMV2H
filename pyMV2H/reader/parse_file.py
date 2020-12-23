@@ -1,3 +1,4 @@
+# from pyMV2H.utils.key_progression import KeyProgression
 from pyMV2H.utils.pojos import NOTE, TATUM, KEY, HIERARCHY
 from pyMV2H.utils.voice import Voice
 
@@ -7,6 +8,7 @@ def need_read(fn):
         music_instance = args[0]
         music_instance.read_if_needed()
         return fn(*args, **kwargs)
+
     return inner
 
 
@@ -20,6 +22,7 @@ class Music:
         self.__hierarchy__ = None
         self.__has_read__ = False
         self.__voices__ = None
+        self.__duration__ = 0.
 
     def read_if_needed(self):
         if not self.__has_read__:
@@ -31,6 +34,8 @@ class Music:
         self.__notes__ = list()
         self.__hierarchy__ = list()
         self.__voices__ = list()
+        self.__duration__ = 0.
+
         with open(self.__file_name__, 'r') as file:
             all_lines = file.readlines()
             for line in all_lines:
@@ -45,6 +50,7 @@ class Music:
             self.__parse_key__(line)
         if line.startswith('Hierarchy'):
             self.__parse_hierarchy__(line)
+
         if line.startswith('Tatum'):
             self.__parse_tatum__(line)
 
@@ -53,6 +59,7 @@ class Music:
         args = [int(x) for x in line.split(' ')[1:]]
         note = NOTE(*args)
         self.__notes__.append(note)
+        self.__duration__ = max(self.__duration__, note.off_val)
 
         # Create music voices
         while note.voice >= len(self.__voices__):
@@ -63,18 +70,22 @@ class Music:
     def __parse_tatum__(self, line):
         # Tatum 3750
         args = [int(x) for x in line.split(' ')[1:]]
-        self.__tatums__.append(TATUM(*args))
+        tatum = TATUM(*args)
+        self.__tatums__.append(tatum)
+        self.__duration__ = max(self.__duration__, tatum.time)
 
     def __parse_key__(self, line):
         # Key 0 Maj 0
         args = line.split(' ')[1:]
+        key = KEY(int(args[0]), args[1].lower() == 'maj', int(args[2]))
         self.__keys__.append(
-            KEY(int(args[0]), args[1].lower() == 'maj', int(args[2]))
+            key
         )
+        self.__duration__ = max(self.__duration__, key.time)
 
     def __parse_hierarchy__(self, line):
         # Hierarchy 3,2 1 a=0 0
-        args = [int(x) for x in  line.replace(',', ' ').replace('a=', '').split(' ')[1:]]
+        args = [int(x) for x in line.replace(',', ' ').replace('a=', '').split(' ')[1:]]
         if len(args) == 3:
             # time is optional on original description, set it to zero by default
             args.append(0)
