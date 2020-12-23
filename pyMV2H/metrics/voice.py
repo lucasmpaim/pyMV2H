@@ -1,0 +1,86 @@
+from .f1 import f1_score
+from ..reader.parse_file import Music
+from ..utils.align_files import create_list_of_size
+from ..utils.notes_match import match
+from ..utils.pojos import NOTE
+from ..utils.voice import Voice, NoteCluster
+
+
+def voice_score(p_music: Music, t_music: Music):
+    p_music.read_if_needed()
+    t_music.read_if_needed()
+
+    provided_voices = create_list_of_size(len(p_music.__voices__), lambda: Voice())
+    transcription_voices = create_list_of_size(len(t_music.__voices__), lambda: Voice())
+    p_note_mapping = dict()
+
+    for t_note in t_music.__notes__:
+        for p_note in p_music.__notes__:
+            if match(t_note, p_note):
+                # Found a match
+                p_note_mapping[t_note] = p_note
+                provided_voices[p_note.voice].add_note(note=p_note)
+                transcription_voices[t_note.voice].add_note(note=t_note)
+
+    for voice in provided_voices:
+        voice.create_connections()
+
+    for voice in transcription_voices:
+        voice.create_connections()
+
+    true_positives = 0
+    false_positives = 0
+    false_negatives = 0
+
+    # iterate over all voices on transcription
+    for voice in transcription_voices:
+        # go to each cluster in the transcription voice
+        for note_cluster in voice.__note_clusters__.values():
+            #  Create list of notes which are linked to in the transcription
+            transcription_notes = list()
+            for next_transcription_cluster in note_cluster.next_clusters:
+                transcription_notes += next_transcription_cluster.notes
+
+            # Go through each note in the note cluster
+            for t_note in note_cluster.notes:
+                p_note = p_note_mapping[t_note]
+
+                # Find the matching ground truth note and its place in its voice
+                p_voice: Voice = provided_voices[p_note.voice]
+                p_cluster = p_voice.get_cluster(p_note)
+
+                # Create list of notes which are linked to in the ground truth
+                next_p_notes_final = list()
+                for cluster in p_cluster.next_clusters:
+                    next_p_notes_final += cluster.notes
+
+                # Count how many tp, fp, and fn for these connection sets
+                connection_true_positives = 0
+
+                for next_t_note in transcription_notes:
+                    for next_p_note in next_p_notes_final:
+                        if match(next_t_note, next_p_note):
+                            connection_true_positives += 1
+                            break
+
+                connection_false_positives = connection_true_positives - len(transcription_notes)
+                connection_false_negatives = connection_true_positives - len(next_p_notes_final)
+
+                # Normalize counts before adding to totals, so that each connection is weighted equally
+                out_weight = (len(next_p_notes_final) + len(transcription_notes)) / 2.
+                if out_weight > 0:
+                    true_positives += (connection_true_positives / (out_weight * len(note_cluster.notes)))
+                    false_positives += (connection_false_positives / (out_weight * len(note_cluster.notes)))
+                    false_negatives += (connection_false_negatives / (out_weight * len(note_cluster.notes)))
+
+                # # List of notes which are linked to in the original ground truth (including multi-pitch non-TPs)
+                # next_original_p_notes = list()
+                # for next_p_cluster in p_music.__voices__[p_note.voice].get_node_cluster(p_note).next_clusters:
+                #     next_original_p_notes += next_p_cluster.notes
+                #
+                # # Both are the end of a voice
+                # if len(next_original_p_notes) == 0 and len(transcription_notes) == 0:
+                #
+                # pass
+
+    return f1_score(true_positives, false_positives, false_negatives)

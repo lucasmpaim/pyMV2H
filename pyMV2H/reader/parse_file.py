@@ -1,4 +1,5 @@
 from pyMV2H.utils.pojos import NOTE, TATUM, KEY, HIERARCHY
+from pyMV2H.utils.voice import Voice
 
 
 def need_read(fn):
@@ -18,6 +19,7 @@ class Music:
         self.__notes__ = None
         self.__hierarchy__ = None
         self.__has_read__ = False
+        self.__voices__ = None
 
     def read_if_needed(self):
         if not self.__has_read__:
@@ -28,6 +30,7 @@ class Music:
         self.__keys__ = list()
         self.__notes__ = list()
         self.__hierarchy__ = list()
+        self.__voices__ = list()
         with open(self.__file_name__, 'r') as file:
             all_lines = file.readlines()
             for line in all_lines:
@@ -48,7 +51,14 @@ class Music:
     def __parse_note__(self, line):
         # Note 47 46000 46000 46474 1
         args = [int(x) for x in line.split(' ')[1:]]
-        self.__notes__.append(NOTE(*args))
+        note = NOTE(*args)
+        self.__notes__.append(note)
+
+        # Create music voices
+        while note.voice >= len(self.__voices__):
+            self.__voices__.append(Voice())
+        # add note to voice
+        self.__voices__[note.voice].add_note(note)
 
     def __parse_tatum__(self, line):
         # Tatum 3750

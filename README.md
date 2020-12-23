@@ -58,3 +58,5 @@ For convenience at this point, python version doesn't include support for multi-
 - [ ] Support for multi-tempo
 
 - [ ] Reduce the number of dependencies
+
+- [ ] Write unit tests

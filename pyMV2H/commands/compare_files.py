@@ -1,4 +1,6 @@
 from .base import Base
+from ..metrics import multi_pitch
+from ..metrics.voice import voice_score
 
 
 class CompareFilesCommand(Base):
@@ -9,4 +11,11 @@ class CompareFilesCommand(Base):
 
         reference_file = Music(self.options['<reference_file>'])
         transcription_file = Music(self.options['<transcription_file>'])
-        align_files(reference_file, transcription_file)
+        # align_files(reference_file, transcription_file)
+        reference_file.read_if_needed()
+        transcription_file.read_if_needed()
+        print(
+            f'Multi-Pitch: {multi_pitch.multi_pitch_accuracy(reference_file.__notes__, transcription_file.__notes__)}'
+        )
+        print(f'Voice: {voice_score(reference_file, transcription_file)}')
+

@@ -2,7 +2,7 @@ from .f1 import f1_score
 from ..utils.notes_match import match
 
 
-def multi_pinch_accuracy(p_notes: list, t_notes: list):
+def multi_pitch_accuracy(p_notes: list, t_notes: list):
     true_positives = 0
 
     for t_note in t_notes:
