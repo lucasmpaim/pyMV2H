@@ -16,5 +16,5 @@ MIDI_TIME_SIGNATURE = namedtuple('TIME_SIGNATURE', 'numerator denominator')
 MV2H_WEIGHTS = namedtuple(
     'MV2H_WEIGHTS',
     'multi_pitch voice metrical value_detection harmonic',
-    defaults=[0] * 5
+    defaults=[1] * 5
 )
