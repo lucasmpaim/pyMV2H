@@ -1,7 +1,7 @@
 from .f1 import f1_score
 from pyMV2H.utils.music import Music
 from ..utils.align_files import create_list_of_size
-from ..utils.matches import note_match
+from ..utils.matches import note_match, match_note_list
 from ..utils.voice import Voice
 
 
@@ -11,17 +11,14 @@ def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):
 
     provided_voices = create_list_of_size(len(p_music.__voices__), lambda: Voice())
     transcription_voices = create_list_of_size(len(t_music.__voices__), lambda: Voice())
-    p_note_mapping = dict()
+    p_note_mapping = match_note_list(p_music.__notes__, t_music.__notes__)
 
     match_mapping = list()
 
-    for t_note in t_music.__notes__:
-        for p_note in p_music.__notes__:
-            if note_match(t_note, p_note):
-                # Found a match
-                p_note_mapping[t_note] = p_note
-                provided_voices[p_note.voice].add_note(note=p_note)
-                transcription_voices[t_note.voice].add_note(note=t_note)
+    for t_note in p_note_mapping.keys():
+        p_note = p_note_mapping[t_note]
+        provided_voices[p_note.voice].add_note(note=p_note)
+        transcription_voices[t_note.voice].add_note(note=t_note)
 
     for voice in provided_voices:
         voice.create_connections()
