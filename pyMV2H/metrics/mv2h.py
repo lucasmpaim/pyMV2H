@@ -23,5 +23,5 @@ def mv2h(
     note_value = note_value_score(p_music, t_music) * weights.note_value
 
     return MV2H(
-        multi_pitch, voice, meter, note_value, harmony, weights
+        multi_pitch, voice, harmony, meter, note_value, weights
     )
