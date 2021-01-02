@@ -34,6 +34,7 @@ setup(
     name='pyMV2H',
     version=__version__,
     description='A python implementation of MV2H metric',
+    long_description_content_type='text/markdown',
     long_description=long_description,
     url='https://github.com/lucasmpaim/pyMV2H',
     author='Lucas Mrowskovsky Paim',
