@@ -42,7 +42,7 @@ setup(
     classifiers=[],
     keywords='cli',
     packages=find_packages(exclude=['docs', 'tests*']),
-    install_requires=['docopt', 'pretty_midi', 'mido', 'numpy', 'orderedset'],
+    install_requires=['docopt', 'pretty_midi', 'mido', 'numpy'],
     extras_require={
         'test': ['coverage', 'pytest', 'pytest-cov'],
     },
