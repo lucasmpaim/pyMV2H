@@ -2,6 +2,7 @@ import abc
 import os
 from ctypes import ArgumentError
 # from math import floor
+from pyMV2H.utils.comparators import note_comparator
 from pyMV2H.utils.pojos import HIERARCHY
 from pyMV2H.utils.midi_meta_tonic_map import key_signature_decode
 
@@ -41,7 +42,7 @@ class BaseConverter(abc.ABC):
         f = open(self.__output__, "w")
         # Write Notes
         notes = self.get_notes()
-        notes.sort(key=lambda a: a.on_val)
+        notes.sort(key=note_comparator())
         f.writelines([
             f'Note {round(x.pitch)} {round(x.on)} {round(x.on_val)} {round(x.off_val)} {round(x.voice)}\n' for x in notes
         ])

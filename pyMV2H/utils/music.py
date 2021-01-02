@@ -1,4 +1,5 @@
 from pyMV2H.utils.convert_time import convert_time
+from pyMV2H.utils.comparators import note_comparator
 from pyMV2H.utils.pojos import NOTE, TATUM, KEY, HIERARCHY
 from pyMV2H.utils.voice import Voice
 
@@ -113,7 +114,7 @@ class Music:
         if self.__notes__ is None:
             return
 
-        self.__notes__.sort(key=lambda a: a.on_val)
+        self.__notes__.sort(key=note_comparator())
         for note in self.__notes__:
             self.__duration__ = max(self.__duration__, note.off_val)
             # Create music voices
@@ -127,6 +128,9 @@ class Music:
 
         for tatum in self.__tatums__:
             self.__duration__ = max(self.__duration__, tatum.time)
+
+        for voice in self.__voices__:
+            voice.create_connections()
 
     def align(self, p_music, alignment: list):
         new_notes = list()

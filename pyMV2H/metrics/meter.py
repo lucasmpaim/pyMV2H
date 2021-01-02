@@ -13,13 +13,20 @@ def meter_score(p_music: Music, t_music: Music):
     p_groupings = _get_groupings(p_music)
 
     true_positives = 0
+
     for t_group in t_groupings:
-        for p_group in p_groupings:
+        p_group_index = 0
+        while p_group_index < len(p_groupings):
+            p_group = p_groupings[p_group_index]
             if grouping_match(t_group, p_group):
                 true_positives += 1
+                p_groupings.pop(p_group_index)
+                p_group_index += 1
+                break
+            p_group_index += 1
 
     false_positives = len(t_groupings) - true_positives
-    false_negatives = len(p_groupings) - true_positives
+    false_negatives = len(p_groupings)
 
     return f1_score(true_positives, false_positives, false_negatives)
 

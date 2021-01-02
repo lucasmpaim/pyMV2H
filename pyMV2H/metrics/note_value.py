@@ -22,8 +22,8 @@ def note_value_score(p_music: Music, t_music: Music) -> float:
 
 
 def _get_note_score(p_note: NOTE, t_note: NOTE) -> float:
-    p_duration = p_note.on_val - p_note.off_val
-    t_duration = t_note.on_val - t_note.off_val
+    p_duration = abs(p_note.on_val - p_note.off_val)
+    t_duration = abs(t_note.on_val - t_note.off_val)
 
     diff = abs(p_duration - t_duration)
     if diff < DURATION_DELTA:

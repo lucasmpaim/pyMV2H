@@ -35,9 +35,9 @@ def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):
         # go to each cluster in the transcription voice
         for note_cluster in voice.__note_clusters__.values():
             #  Create list of notes which are linked to in the transcription
-            transcription_notes = list()
+            next_transcription_notes = list()
             for next_transcription_cluster in note_cluster.next_clusters:
-                transcription_notes += next_transcription_cluster.notes
+                next_transcription_notes += next_transcription_cluster.notes
 
             # Go through each note in the note cluster
             for t_note in note_cluster.notes:
@@ -53,19 +53,12 @@ def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):
                     next_p_notes_final += cluster.notes
 
                 # Count how many tp, fp, and fn for these connection sets
-                connection_true_positives = 0
-
-                for next_t_note in transcription_notes:
-                    for next_p_note in next_p_notes_final:
-                        if note_match(next_t_note, next_p_note):
-                            connection_true_positives += 1
-                            break
-
-                connection_false_positives = connection_true_positives - len(transcription_notes)
-                connection_false_negatives = connection_true_positives - len(next_p_notes_final)
+                connection_true_positives = len(match_note_list(next_transcription_notes, next_p_notes_final).keys())
+                connection_false_positives = abs(connection_true_positives - len(next_transcription_notes))
+                connection_false_negatives = abs(connection_true_positives - len(next_p_notes_final))
 
                 # Normalize counts before adding to totals, so that each connection is weighted equally
-                out_weight = (len(next_p_notes_final) + len(transcription_notes)) / 2.
+                out_weight = (len(next_p_notes_final) + len(next_transcription_notes)) / 2.
                 if out_weight > 0:
                     true_positives += (connection_true_positives / (out_weight * len(note_cluster.notes)))
                     false_positives += (connection_false_positives / (out_weight * len(note_cluster.notes)))
@@ -78,12 +71,12 @@ def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):
                         next_original_p_notes += next_p_cluster.notes
 
                     # Both are the end of a voice
-                    if len(next_original_p_notes) == 0 and len(transcription_notes) == 0:
+                    if len(next_original_p_notes) == 0 and len(next_transcription_notes) == 0:
                         match_mapping.append(t_note)
                     else:
                         match = False
                         for p_next_note in next_original_p_notes:
-                            for t_next_note in transcription_notes:
+                            for t_next_note in next_transcription_notes:
                                 # Check if at least one original ground truth connection was correct
                                 if note_match(p_next_note, t_next_note):
                                     match = True

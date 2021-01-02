@@ -1,8 +1,9 @@
 from collections import OrderedDict
 from typing import Optional
 
-from orderedset import OrderedSet
+# from orderedset import OrderedSet
 
+from pyMV2H.utils.comparators import note_comparator, cluster_comparator
 from pyMV2H.utils.pojos import NOTE
 import sys
 
@@ -18,25 +19,34 @@ class NoteCluster:
     def key_string(self) -> str:
         def format_string(value) -> str:
             max_length = len(f'{sys.maxsize}')
-            str_length = max_length - len(f'{value}')
-            return f'{value:0{str_length}d}'
+            return f'{value:0{max_length}d}'
         return f'{format_string(self.onset_time)}_{format_string(self.offset_time)}'
+
+    def __repr__(self):
+        return self.key_string
 
 
 class Voice:
 
     def __init__(self):
-        self.__notes__ = OrderedSet()
+        self.__notes__ = list()
         self.__note_clusters__ = OrderedDict()
 
     def create_connections(self):
         # remove all previous connections
         for cluster in self.__note_clusters__.values():
-            cluster.next_clusters.clear()
+            cluster.next_clusters = list()
+
+        _cluster = self.__note_clusters__
+        self.__note_clusters__ = OrderedDict(
+            sorted(
+                _cluster.items(), key=cluster_comparator()
+            )
+        )
 
         ordered_notes = list(self.__notes__)
-        ordered_notes.sort(key=lambda a: a.on_val)
-        self.__notes__ = OrderedSet(ordered_notes)
+        ordered_notes.sort(key=note_comparator())
+        self.__notes__ = list(ordered_notes)
         # create new connections
         for base_key in self.__note_clusters__.keys():
             base_cluster = self.__note_clusters__[base_key]
@@ -45,7 +55,7 @@ class Voice:
                 next_cluster = self.__note_clusters__[next_key]
                 if next_key == base_key:
                     continue
-                if next_cluster.onset_time == base_cluster.onset_time:
+                if next_cluster.onset_time == base_cluster.offset_time:
                     # Every note cluster which begins at this one's offset time.
                     base_cluster.next_clusters.append(next_cluster)
                 elif next_cluster.onset_time > base_cluster.offset_time:
@@ -67,7 +77,7 @@ class Voice:
         return None
 
     def add_note(self, note: NOTE):
-        self.__notes__.add(note)
+        self.__notes__.append(note)
         cluster = NoteCluster(note.on, note.off_val)
         key = cluster.key_string
         if key not in self.__note_clusters__:
