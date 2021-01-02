@@ -32,6 +32,23 @@ Help:
 
 Using by python code:
 
+```shell
+pip install pyMV2H
+```
+
+Convert midi files:
+
+```python
+from pyMV2H.converter.midi_converter import MidiConverter as Converter
+reference_midi_file = '<midi dir>'
+reference_file = '<reference txt output>'
+
+converter = Converter(file=reference_midi_file, output=reference_file)
+converter.convert_file()
+```
+
+Compare files:
+
 ```python
 from pyMV2H.utils.music import Music
 from pyMV2H.metrics.mv2h import mv2h
