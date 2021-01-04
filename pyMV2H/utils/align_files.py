@@ -105,9 +105,9 @@ def _get_align_matrix(provided_file: Music, transcription_file: Music):
             previous_cell = previous_cells[i][j]
             if distance_i_1 == min_distance:
                 previous_cell.append(-1)
-            elif distance_j_1 == min_distance:
+            if distance_j_1 == min_distance:
                 previous_cell.append(1)
-            else:
+            if distance_i_j_1 == min_distance:
                 previous_cell.append(0)
             distances[i][j] = min_distance
     return previous_cells
