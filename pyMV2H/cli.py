@@ -2,7 +2,7 @@
 pyMV2H
 Usage:
   pyMV2H midi_converter -i <input_dir> -o <output_dir>
-  pyMV2H compare_files -g <reference_file> -t <transcription_file> [-a]
+  pyMV2H compare_files -g <reference_file> -t <transcription_file> [-a] [-p]
   pyMV2H -h | --help
   pyMV2H --version
 Options:
@@ -12,6 +12,7 @@ Options:
   -t                                The transcription file
   -g                                The reference file
   -a                                Align both files
+  -p                                Set the DTW insertion and deletion penalties
 Examples:
   pyMV2H hello
 Help:

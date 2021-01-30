@@ -40,7 +40,7 @@ def align_files(provided_file: Music, transcription_file: Music):
 def _get_possible_alignments(provided_file: Music, transcription_file: Music):
     previous_cells = _get_align_matrix(provided_file, transcription_file)
     ARRAY_SIZE = len(previous_cells)
-    cache_matrix = create_list_of_size(ARRAY_SIZE, lambda: create_list_of_size(ARRAY_SIZE, list))
+    cache_matrix = create_list_of_size(ARRAY_SIZE, lambda: create_list_of_size(len(previous_cells[0]), list))
     return _get_possible_alignments_from_matrix(
         len(previous_cells) - 1,
         len(previous_cells[0]) - 1,
@@ -90,7 +90,7 @@ def _get_align_matrix(provided_file: Music, transcription_file: Music):
     distances[0] = np.full(ARRAY_SIZE[1], np.Inf)
     distances[0][0] = 0.
 
-    for i in range(1, ARRAY_SIZE[1]):
+    for i in range(1, ARRAY_SIZE[0]):
         distances[i][0] = np.Inf
 
     for j in range(1, ARRAY_SIZE[1]):
@@ -118,10 +118,10 @@ def _get_note_pitch_maps(notes_lists):
     for note_list in notes_lists:
         notes_dict = dict()
         for note in note_list:
-            if note.pitch not in notes_dict:
-                notes_dict[note.pitch] = 1
+            if note.pitch in notes_dict:
+                notes_dict[note.pitch] = notes_dict[note.pitch] + 1
             else:
-                notes_dict[note.pitch] = note[note.pitch] + 1
+                notes_dict[note.pitch] = 1
         maps.append(notes_dict)
     return maps
 

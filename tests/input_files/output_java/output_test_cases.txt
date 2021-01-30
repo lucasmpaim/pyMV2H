@@ -1,0 +1,96 @@
+-g ${TRANSCRIPTION_DIR}/Bach-846p-edited.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-846p-edited.mid.txt -a
+Multi-pitch: 1.0
+Voice: 1.0
+Meter: 1.0
+Value: 1.0
+Harmony: 1.0
+MV2H: 1.0
+
+-g ${TRANSCRIPTION_DIR}/Bach-846p-edited.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-846p-orig.mid.txt -a
+Multi-pitch: 0.9972602739726028
+Voice: 1.0
+Meter: 1.0
+Value: 1.0
+Harmony: 1.0
+MV2H: 0.9994520547945205
+
+-g ${TRANSCRIPTION_DIR}/Bach-846p-orig.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-846p-edited.mid.txt -a
+Multi-pitch: 0.9972602739726028
+Voice: 1.0
+Meter: 1.0
+Value: 1.0
+Harmony: 1.0
+MV2H: 0.9994520547945205
+
+-g ${TRANSCRIPTION_DIR}/Bach-846p-orig.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-846p-orig.mid.txt -a
+Multi-pitch: 1.0
+Voice: 1.0
+Meter: 1.0
+Value: 1.0
+Harmony: 1.0
+MV2H: 1.0
+
+-g ${TRANSCRIPTION_DIR}/Bach-846p-orig.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-italian-concerto-edited.mid.txt -a
+Multi-pitch: 0.1574130567419158
+Voice: 0.6640625
+Meter: 0.0734341252699784
+Value: 0.5004017068976618
+Harmony: 0.5
+MV2H: 0.3790622777819112
+
+-g ${TRANSCRIPTION_DIR}/Bach-italian-concerto-edited.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-846p-edited.mid.txt -a
+Multi-pitch: 0.15770171149144252
+Voice: 0.6875
+Meter: 0.09071274298056156
+Value: 0.9521765787860208
+Harmony: 0.5
+MV2H: 0.477618206651605
+
+-g ${TRANSCRIPTION_DIR}/Bach-italian-concerto-edited.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-italian-concerto-edited.mid.txt -a
+Multi-pitch: 1.0
+Voice: 1.0
+Meter: 1.0
+Value: 1.0
+Harmony: 1.0
+MV2H: 1.0
+
+-g ${TRANSCRIPTION_DIR}/Bach-italian-concerto-edited.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-italian-concerto-orig.mid.txt -a
+Multi-pitch: 0.9958847736625515
+Voice: 1.0
+Meter: 0.9119496855345912
+Value: 0.9995330049495524
+Harmony: 1.0
+MV2H: 0.981473492829339
+
+-g ${TRANSCRIPTION_DIR}/Bach-italian-concerto-orig.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-846p-edited.mid.txt -a
+Multi-pitch: 0.15824710894704808
+Voice: 0.6744186046511628
+Meter: 0.06823027718550108
+Value: 0.880518333494335
+Harmony: 0.5
+MV2H: 0.45628286485560937
+
+-g ${TRANSCRIPTION_DIR}/Bach-italian-concerto-orig.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-846p-orig.mid.txt -a
+Multi-pitch: 0.15795868772782504
+Voice: 0.6666666666666666
+Meter: 0.07889125799573561
+Value: 0.8606047224100575
+Harmony: 0.5
+MV2H: 0.45282426696005695
+
+-g ${TRANSCRIPTION_DIR}/Bach-italian-concerto-orig.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-italian-concerto-edited.mid.txt -a
+Multi-pitch: 0.9958847736625515
+Voice: 1.0
+Meter: 0.9119496855345912
+Value: 0.9996891975357521
+Harmony: 1.0
+MV2H: 0.981504731346579
+
+-g ${TRANSCRIPTION_DIR}/Bach-italian-concerto-orig.mid.txt -t ${TRANSCRIPTION_DIR}/Bach-italian-concerto-orig.mid.txt -a
+Multi-pitch: 1.0
+Voice: 1.0
+Meter: 1.0
+Value: 1.0
+Harmony: 1.0
+MV2H: 1.0
+
