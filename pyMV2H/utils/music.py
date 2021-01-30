@@ -76,9 +76,11 @@ class Music:
     def __parse_key__(self, line):
         # Key 0 Maj 0
         args = line.split(' ')[1:]
-        self.__keys__.append(
-            KEY(int(args[0]), args[1].lower() == 'maj', int(args[2]))
-        )
+        key_to_add = KEY(int(args[0]), args[1].lower() == 'maj', int(args[2]))
+        if key_to_add not in self.__keys__:
+            self.__keys__.append(
+                key_to_add
+            )
 
     def __parse_hierarchy__(self, line):
         # Hierarchy 3,2 1 a=0 0
@@ -101,10 +103,10 @@ class Music:
             if note.on == most_recent_value_onset_time:
                 most_recent_list.append(note)
             else:
-                notes.append(most_recent_list)
                 most_recent_list = list()
                 most_recent_value_onset_time = note.on
                 most_recent_list.append(note)
+                notes.append(most_recent_list)
         return notes
 
     def __post_process__(self):

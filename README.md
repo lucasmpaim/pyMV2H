@@ -1,5 +1,5 @@
 
-![badge](https://github.com/lucasmpaim/pyMV2H/workflows/python-package/badge.svg)
+![badge](https://github.com/lucasmpaim/pyMV2H/workflows/pyMV2H/badge.svg)
 
 # pyMV2H
 

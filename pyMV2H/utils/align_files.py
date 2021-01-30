@@ -117,12 +117,12 @@ def _get_note_pitch_maps(notes_lists):
     maps = list()
     for note_list in notes_lists:
         notes_dict = dict()
+        maps.append(notes_dict)
         for note in note_list:
-            if note.pitch in notes_dict:
+            if note.pitch in notes_dict.keys():
                 notes_dict[note.pitch] = notes_dict[note.pitch] + 1
             else:
                 notes_dict[note.pitch] = 1
-        maps.append(notes_dict)
     return maps
 
 
@@ -143,7 +143,7 @@ def get_distance(p_note_map, t_note_map):
             p_count = p_note_map[t_key]
             true_positives += min(count, p_count)
             if count > p_count:
-                false_positives += min(count, p_count)
+                false_positives += count - p_count
         else:
             false_positives += count
 

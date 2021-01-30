@@ -1,7 +1,7 @@
 """Tests for our `pyMV2H compare_files` subcommand."""
 
 
-from subprocess import PIPE, Popen as popen
+from subprocess import PIPE, check_output
 from unittest import TestCase
 import os
 
@@ -10,8 +10,12 @@ class TestCompareFiles(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._output_file = 'tests/input_files/output_java/output_test_cases.txt'
-        cls._transcription_dir = 'tests/input_files/transcription_files'
+
+        current_path = os.path.dirname(__file__)
+        current_path = os.path.join(current_path, '../../')
+
+        cls._output_file = f'{current_path}/tests/input_files/output_java/output_test_cases.txt'
+        cls._transcription_dir = f'{current_path}/tests/input_files/transcription_files'
         cls._replace_key = '${TRANSCRIPTION_DIR}'
 
     def test_if_file_exists(self):
@@ -44,11 +48,17 @@ class TestCompareFiles(TestCase):
     def check_output(self, command_line, metrics):
         command_line = command_line.replace(self._replace_key, self._transcription_dir)
         command_line = f'pyMV2H compare_files {command_line}'
-        output = popen(command_line.split(' '), stdout=PIPE).communicate()[0]
+
+        print('*' * 30)
+        print(f'Running: {command_line}')
+        output = check_output(
+            command_line.split(' '),
+            stderr=PIPE,
+            timeout=20
+        )
         lines = output.split('\n'.encode())
         python_version_metrics = self.parse_pymv2h_output(lines)
         for metric_name in metrics.keys():
-            print(command_line)
             print(f'Java: {metrics}')
             print(f'Python: {python_version_metrics}')
             print('*' * 30)
