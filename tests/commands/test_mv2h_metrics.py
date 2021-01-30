@@ -10,8 +10,8 @@ class TestCompareFiles(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls._output_file = '../input_files/output_java/output_test_cases.txt'
-        cls._transcription_dir = '../input_files/transcription_files'
+        cls._output_file = 'tests/input_files/output_java/output_test_cases.txt'
+        cls._transcription_dir = 'tests/input_files/transcription_files'
         cls._replace_key = '${TRANSCRIPTION_DIR}'
 
     def test_if_file_exists(self):

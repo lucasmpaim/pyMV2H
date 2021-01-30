@@ -1,3 +1,6 @@
+
+![badge](https://github.com/lucasmpaim/pyMV2H/workflows/python-package/badge.svg)
+
 # pyMV2H
 
 A pure-python implementation of MV2H metric, the original repo can be found [here](https://github.com/apmcleod/MV2H).
