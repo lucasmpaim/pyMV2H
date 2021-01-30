@@ -14,7 +14,8 @@ Options:
   -a                                Align both files
   -p                                Set the DTW insertion and deletion penalties
 Examples:
-  pyMV2H hello
+  pyMV2H compare_files -g <reference_file> -t <transcription_file> -a -p 2.35
+  pyMV2H midi_converter -i <midi_file> -o <output_dir>
 Help:
   For help using this tool, please open an issue on the Github repository:
   https://github.com/lucasmpaim/pyMV2H

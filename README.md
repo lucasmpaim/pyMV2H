@@ -1,5 +1,7 @@
 
 ![badge](https://github.com/lucasmpaim/pyMV2H/workflows/pyMV2H/badge.svg)
+![PyPI license](https://img.shields.io/pypi/l/pyMV2H.svg)
+![PyPI version fury.io](https://badge.fury.io/py/pyMV2H.svg)
 
 # pyMV2H
 
@@ -16,7 +18,7 @@ Using by shell:
 pyMV2H
 Usage:
   pyMV2H midi_converter -i <input_dir> -o <output_dir>
-  pyMV2H compare_files -g <reference_file> -t <transcription_file> [-a]
+  pyMV2H compare_files -g <reference_file> -t <transcription_file> [-a] [-p]
   pyMV2H -h | --help
   pyMV2H --version
 Options:
@@ -26,8 +28,10 @@ Options:
   -t                                The transcription file
   -g                                The reference file
   -a                                Align both files
+  -p                                Set the DTW insertion and deletion penalties
 Examples:
-  pyMV2H hello
+  pyMV2H compare_files -g <reference_file> -t <transcription_file> -a -p 2.35
+  pyMV2H midi_converter -i <midi_file> -o <output_dir>
 Help:
   For help using this tool, please open an issue on the Github repository:
   https://github.com/lucasmpaim/pyMV2H
@@ -90,6 +94,8 @@ For convenience at this point, python version doesn't include support for multi-
 
 - [ ] MusicXML parser
 
-- [ ] Write unit tests
+- [x] Write unit tests
+
+- [ ] Increase the number of Unit Tests
 
 - [ ] Refactor code to be more pythonic
