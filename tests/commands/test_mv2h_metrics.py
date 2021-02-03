@@ -53,7 +53,8 @@ class TestCompareFiles(TestCase):
         print(f'Running: {command_line}')
         output = check_output(
             command_line.split(' '),
-            stderr=PIPE
+            stderr=PIPE,
+            timeout=60
         )
         lines = output.split('\n'.encode())
         python_version_metrics = self.parse_pymv2h_output(lines)
