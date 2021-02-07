@@ -9,13 +9,13 @@ def note_value_score(p_music: Music, t_music: Music, multi_pitch_match=None, voi
     p_music.read_if_needed()
     t_music.read_if_needed()
 
-    notes_check = multi_pitch_match
-    multi_pinch_check = voice_match
+    notes_check = voice_match
+    multi_pinch_check = multi_pitch_match
 
-    if voice_match is None:
+    if notes_check is None:
         _, notes_check = voice_score(p_music, t_music, return_match_mapping=True)
 
-    if multi_pitch_match:
+    if multi_pinch_check is None:
         _, multi_pinch_check = multi_pitch_accuracy(
             p_music.__notes__,
             t_music.__notes__,

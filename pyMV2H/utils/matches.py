@@ -35,7 +35,7 @@ def grouping_match(group_a: GROUPING, group_b: GROUPING) -> bool:
 
 
 @freeze_args()
-@lru_cache
+@lru_cache(maxsize=128)
 def match_note_list(p_notes: list, t_notes: list) -> dict:
     match_notes = dict()
     t_notes_copy = list(t_notes)

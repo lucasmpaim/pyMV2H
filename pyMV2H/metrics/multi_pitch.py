@@ -6,7 +6,7 @@ from ..utils.matches import note_match, match_note_list
 
 
 @freeze_args()
-@lru_cache
+@lru_cache(maxsize=128)
 def multi_pitch_accuracy(p_notes: list, t_notes: list, return_match_notes=False):
     match_notes = match_note_list(p_notes, t_notes)
     true_positives = len(match_notes.keys())
