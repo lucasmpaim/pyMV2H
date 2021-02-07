@@ -73,8 +73,8 @@ cpdef int convert_time(int time, object p_music, object t_music, list py_alignme
             # Only 1 anchor. Just linear shift.
             alignment_time = (
                     time -
-                    t_notes[alignment[p_next_anchor]][0].on +
-                    p_notes[alignment[p_next_anchor]][0].on
+                    t_notes[alignment.data.as_ints[p_next_anchor]][0].on +
+                    p_notes[alignment.data.as_ints[p_next_anchor]][0].on
             )
     elif p_next_anchor == len(p_notes):
         # Time is after the last anchor. Use the previous rate.
@@ -109,12 +109,12 @@ cpdef int convert_time(int time, object p_music, object t_music, list py_alignme
     return int(alignment_time)
 
 
-cdef int _convert_time(int time, int previous_anchor, int next_anchor, list p_notes, list t_notes, dict alignment):
+cdef int _convert_time(int time, int previous_anchor, int next_anchor, list p_notes, list t_notes, array.array alignment):
     cdef int p_previous_time = p_notes[previous_anchor][0].on
     cdef int p_next_time = p_notes[next_anchor][0].on
 
-    cdef int t_previous_time = t_notes[alignment[previous_anchor]][0].on
-    cdef int t_next_time = t_notes[alignment[next_anchor]][0].on
+    cdef int t_previous_time = t_notes[alignment.data.as_ints[previous_anchor]][0].on
+    cdef int t_next_time = t_notes[alignment.data.as_ints[next_anchor]][0].on
 
     cdef int rate = ((p_next_time - p_previous_time) / (t_next_time - t_previous_time))
     return round(rate * (time - t_previous_time) + p_previous_time)

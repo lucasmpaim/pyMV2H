@@ -21,7 +21,7 @@ cpdef tuple align_files(provided_file: Music, transcription_file: Music):
     transcription_file.read_if_needed()
 
     cdef list alignment_nodes = _get_possible_alignments(provided_file, transcription_file)
-    cdef int total = 0
+    cdef long total = 0
     best = MV2H(0., 0., 0., 0., 0.)
     best_music = None
 
