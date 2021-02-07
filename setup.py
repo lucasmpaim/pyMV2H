@@ -5,6 +5,7 @@ from os.path import abspath, dirname, join
 from subprocess import call
 
 from setuptools import Command, find_packages, setup
+from Cython.Build import cythonize
 
 from pyMV2H import __version__
 
@@ -43,7 +44,7 @@ setup(
     classifiers=[],
     keywords='cli',
     packages=find_packages(exclude=['docs', 'tests*']),
-    install_requires=['docopt', 'pretty_midi', 'mido', 'tqdm'],
+    install_requires=['docopt', 'pretty_midi', 'mido', 'tqdm', 'cython'],
     extras_require={
         'test': ['coverage', 'pytest', 'pytest-cov'],
     },
@@ -53,4 +54,9 @@ setup(
         ],
     },
     cmdclass={'test': RunTests},
+    ext_modules=cythonize([
+        'pyMV2H/utils/align_files.pyx',
+        'pyMV2H/utils/convert_time.pyx',
+        'pyMV2H/utils/match_note_list.pyx',
+    ], annotate=True)
 )

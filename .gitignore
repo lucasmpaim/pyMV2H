@@ -9,3 +9,6 @@ dist
 venv/
 *.pyc
 .DS_Store
+*.c
+*.so
+*.html

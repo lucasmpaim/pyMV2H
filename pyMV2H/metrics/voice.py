@@ -3,7 +3,8 @@ from functools import lru_cache
 from .f1 import f1_score
 from pyMV2H.utils.music import Music
 from ..utils.align_files import create_list_of_size
-from ..utils.matches import note_match, match_note_list
+from ..utils.matches import note_match
+from ..utils.match_note_list import match_note_list
 from ..utils.voice import Voice
 
 

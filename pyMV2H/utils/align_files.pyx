@@ -10,7 +10,7 @@ from pyMV2H.utils.alignment_node import AlignmentNode
 from pyMV2H.utils.mv2h import MV2H
 
 
-def align_files(provided_file: Music, transcription_file: Music):
+cpdef tuple align_files(provided_file: Music, transcription_file: Music):
     """
     Align based on DTW algorithm
     """
@@ -20,8 +20,8 @@ def align_files(provided_file: Music, transcription_file: Music):
     provided_file.read_if_needed()
     transcription_file.read_if_needed()
 
-    alignment_nodes = _get_possible_alignments(provided_file, transcription_file)
-    total = 0
+    cdef list alignment_nodes = _get_possible_alignments(provided_file, transcription_file)
+    cdef long total = 0
     best = MV2H(0., 0., 0., 0., 0.)
     best_music = None
 
@@ -42,10 +42,10 @@ def align_files(provided_file: Music, transcription_file: Music):
     return best_music, best
 
 
-def _get_possible_alignments(provided_file: Music, transcription_file: Music):
-    previous_cells = _get_align_matrix(provided_file, transcription_file)
-    ARRAY_SIZE = len(previous_cells)
-    cache_matrix = create_list_of_size(ARRAY_SIZE, lambda: create_list_of_size(len(previous_cells[0]), list))
+cdef list _get_possible_alignments(provided_file: Music, transcription_file: Music):
+    cdef list previous_cells = _get_align_matrix(provided_file, transcription_file)
+    cdef int ARRAY_SIZE = len(previous_cells)
+    cdef list cache_matrix = create_list_of_size(ARRAY_SIZE, lambda: create_list_of_size(len(previous_cells[0]), list))
     return _get_possible_alignments_from_matrix(
         len(previous_cells) - 1,
         len(previous_cells[0]) - 1,
@@ -54,7 +54,7 @@ def _get_possible_alignments(provided_file: Music, transcription_file: Music):
     )
 
 
-def _get_possible_alignments_from_matrix(i: int, j: int, matrix: list, cache: list):
+cdef list _get_possible_alignments_from_matrix(i: int, j: int, matrix: list, cache: list):
     alignments = cache[i][j]
     if not len(alignments) == 0:
         return alignments
@@ -81,7 +81,7 @@ def _get_possible_alignments_from_matrix(i: int, j: int, matrix: list, cache: li
     return alignments
 
 
-def _get_align_matrix(provided_file: Music, transcription_file: Music):
+cdef list _get_align_matrix(provided_file: Music, transcription_file: Music):
     provided_notes = provided_file.get_notes_grouped_by_onset()
     transcription_notes = transcription_file.get_notes_grouped_by_onset()
 
@@ -118,7 +118,7 @@ def _get_align_matrix(provided_file: Music, transcription_file: Music):
     return previous_cells
 
 
-def _get_note_pitch_maps(notes_lists):
+cdef list _get_note_pitch_maps(notes_lists):
     maps = list()
     for note_list in notes_lists:
         notes_dict = dict()
@@ -131,7 +131,7 @@ def _get_note_pitch_maps(notes_lists):
     return maps
 
 
-def get_distance(p_note_map, t_note_map):
+cdef float get_distance(p_note_map, t_note_map):
     """
     Get the distance between a given ground truth note set and a possible transcription note set.
 
@@ -139,8 +139,8 @@ def get_distance(p_note_map, t_note_map):
     :param t_note_map: he pitch map of a possible transcription note set.
     :return: The alignment score. 1 - its F-measure.
     """
-    true_positives = 0
-    false_positives = 0
+    cdef int true_positives = 0
+    cdef int false_positives = 0
 
     for t_key in t_note_map.keys():
         count = t_note_map[t_key]
@@ -155,12 +155,12 @@ def get_distance(p_note_map, t_note_map):
     if true_positives == 0:
         return 1.0
 
-    p_count = reduce(lambda a, b: a + b, p_note_map.values(), 0)
-    false_negatives = p_count - true_positives
+    cdef int p_note_count = reduce(lambda a, b: a + b, p_note_map.values(), 0)
+    cdef int false_negatives = p_note_count - true_positives
     return 1 - f1.f1_score(true_positives, false_positives, false_negatives)
 
 
-def create_list_of_size(size: int, value) -> list:
+cpdef list create_list_of_size(size: int, value):
     """
     Helper function to create an list of size x with initial value
     Use this method only for dynamic lists, make preference for numpy arrays initializers like:
@@ -169,7 +169,7 @@ def create_list_of_size(size: int, value) -> list:
     :param value: lambda function to initialize the value
     :return: the list of size x with all elements equal to return of value
     """
-    list_to_return = list()
+    cdef list list_to_return = list()
     for _ in range(size):
         if callable(value):
             list_to_return.append(value())
