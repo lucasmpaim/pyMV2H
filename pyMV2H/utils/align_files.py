@@ -1,6 +1,7 @@
+import math
 from functools import reduce
 
-import numpy as np
+from tqdm import tqdm
 
 from pyMV2H.metrics import f1
 from pyMV2H.utils.music import Music
@@ -13,6 +14,7 @@ def align_files(provided_file: Music, transcription_file: Music):
     """
     Align based on DTW algorithm
     """
+
     from pyMV2H.metrics.mv2h import mv2h
 
     provided_file.read_if_needed()
@@ -26,14 +28,17 @@ def align_files(provided_file: Music, transcription_file: Music):
     for node in alignment_nodes:
         total += node.count
 
-    for node_aligment in alignment_nodes:
-        for j in range(node_aligment.count):
-            alignment = node_aligment.get_alignment(j)
-            shifted_music = transcription_file.align(provided_file, alignment)
-            candidate: MV2H = mv2h(provided_file, shifted_music)
-            if candidate > best:
-                best = candidate
-                best_music = shifted_music
+    with tqdm(total=total) as pbar:
+        for node_alignment in alignment_nodes:
+            for j in range(node_alignment.count):
+                alignment = node_alignment.get_alignment(j)
+                shifted_music = transcription_file.align(provided_file, alignment)
+                candidate: MV2H = mv2h(provided_file, shifted_music)
+                if candidate > best:
+                    best = candidate
+                    best_music = shifted_music
+                pbar.update()
+
     return best_music, best
 
 
@@ -86,12 +91,12 @@ def _get_align_matrix(provided_file: Music, transcription_file: Music):
     ARRAY_SIZE = (len(provided_notes) + 1, len(transcription_notes) + 1)
 
     previous_cells = create_list_of_size(ARRAY_SIZE[0], lambda: create_list_of_size(ARRAY_SIZE[1], list))
-    distances = np.zeros(ARRAY_SIZE)
-    distances[0] = np.full(ARRAY_SIZE[1], np.Inf)
+    distances = create_list_of_size(ARRAY_SIZE[0], lambda: create_list_of_size(ARRAY_SIZE[1], 0))
+    distances[0] = create_list_of_size(ARRAY_SIZE[1], math.inf)
     distances[0][0] = 0.
 
     for i in range(1, ARRAY_SIZE[0]):
-        distances[i][0] = np.Inf
+        distances[i][0] = math.inf
 
     for j in range(1, ARRAY_SIZE[1]):
         for i in range(1, ARRAY_SIZE[0]):
@@ -166,5 +171,8 @@ def create_list_of_size(size: int, value) -> list:
     """
     list_to_return = list()
     for _ in range(size):
-        list_to_return.append(value())
+        if callable(value):
+            list_to_return.append(value())
+        else:
+            list_to_return.append(value)
     return list_to_return

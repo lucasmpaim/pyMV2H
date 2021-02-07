@@ -5,16 +5,22 @@ from pyMV2H.utils.algorithm_config import DURATION_DELTA
 from pyMV2H.utils.pojos import NOTE
 
 
-def note_value_score(p_music: Music, t_music: Music) -> float:
+def note_value_score(p_music: Music, t_music: Music, multi_pitch_match=None, voice_match=None) -> float:
     p_music.read_if_needed()
     t_music.read_if_needed()
 
-    _, notes_check = voice_score(p_music, t_music, return_match_mapping=True)
-    _, multi_pinch_check = multi_pitch_accuracy(
-        p_music.__notes__,
-        t_music.__notes__,
-        return_match_notes=True
-    )
+    notes_check = voice_match
+    multi_pinch_check = multi_pitch_match
+
+    if notes_check is None:
+        _, notes_check = voice_score(p_music, t_music, return_match_mapping=True)
+
+    if multi_pinch_check is None:
+        _, multi_pinch_check = multi_pitch_accuracy(
+            p_music.__notes__,
+            t_music.__notes__,
+            return_match_notes=True
+        )
     score_sum = 0.
     for t_note in notes_check:
         score_sum += _get_note_score(multi_pinch_check[t_note], t_note)

@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from .f1 import f1_score
 from pyMV2H.utils.music import Music
 from ..utils.align_files import create_list_of_size
@@ -5,6 +7,7 @@ from ..utils.matches import note_match, match_note_list
 from ..utils.voice import Voice
 
 
+@lru_cache(maxsize=128)
 def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):
     p_music.read_if_needed()
     t_music.read_if_needed()
