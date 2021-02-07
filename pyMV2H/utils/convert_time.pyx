@@ -1,12 +1,13 @@
+from pyMV2H.utils.music import Music
 
-def convert_time(time: int, p_music, t_music, alignment, alignment_times) -> int:
+cpdef int convert_time(time: int, p_music: Music, t_music: Music, alignment: list, alignment_times: dict):
 
     alignment_time = alignment_times.get(time, None)
     if alignment_time is not None:
         return alignment_time
 
-    t_index = -1
-    t_notes = t_music.get_notes_grouped_by_onset()
+    cdef int t_index = -1
+    cdef list t_notes = t_music.get_notes_grouped_by_onset()
 
     # Find the correct transcription anchor index to start with
     for index, t_note in enumerate(t_notes):
@@ -20,11 +21,11 @@ def convert_time(time: int, p_music, t_music, alignment, alignment_times) -> int
             t_index = index - 0.5
             break
 
-    p_notes = p_music.get_notes_grouped_by_onset()
-    p_previous_anchor = -1
-    p_previous_previous_anchor = -1
-    p_next_anchor = len(p_notes)
-    p_next_next_anchor = len(p_notes)
+    cdef list p_notes = p_music.get_notes_grouped_by_onset()
+    cdef int p_previous_anchor = -1
+    cdef int p_previous_previous_anchor = -1
+    cdef int p_next_anchor = len(p_notes)
+    cdef int p_next_next_anchor = len(p_notes)
 
     for index, _ in enumerate(alignment):
         if alignment[index] != -1:
@@ -99,13 +100,13 @@ def convert_time(time: int, p_music, t_music, alignment, alignment_times) -> int
     return int(alignment_time)
 
 
-def _convert_time(time, previous_anchor, next_anchor, p_notes, t_notes, alignment) -> int:
-    p_previous_time = p_notes[previous_anchor][0].on
-    p_next_time = p_notes[next_anchor][0].on
+cdef int _convert_time(time, previous_anchor, next_anchor, p_notes, t_notes, alignment):
+    cdef int p_previous_time = p_notes[previous_anchor][0].on
+    cdef int p_next_time = p_notes[next_anchor][0].on
 
-    t_previous_time = t_notes[alignment[previous_anchor]][0].on
-    t_next_time = t_notes[alignment[next_anchor]][0].on
+    cdef int t_previous_time = t_notes[alignment[previous_anchor]][0].on
+    cdef int t_next_time = t_notes[alignment[next_anchor]][0].on
 
-    rate = ((p_next_time - p_previous_time) / (t_next_time - t_previous_time))
+    cdef int rate = ((p_next_time - p_previous_time) / (t_next_time - t_previous_time))
     return round(rate * (time - t_previous_time) + p_previous_time)
 

@@ -1,6 +1,3 @@
-from functools import lru_cache
-
-from pyMV2H.utils.convert_time import convert_time
 from pyMV2H.utils.comparators import note_comparator
 from pyMV2H.utils.pojos import NOTE, TATUM, KEY, HIERARCHY
 from pyMV2H.utils.voice import Voice
@@ -144,6 +141,8 @@ class Music:
             voice.create_connections()
 
     def align(self, p_music, alignment: list):
+        from pyMV2H.utils.convert_time import convert_time
+
         new_notes = list()
         align_times = dict()
 
