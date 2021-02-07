@@ -58,5 +58,5 @@ setup(
         'pyMV2H/utils/align_files.pyx',
         'pyMV2H/utils/convert_time.pyx',
         'pyMV2H/utils/match_note_list.pyx',
-    ])
+    ], annotate=True)
 )
