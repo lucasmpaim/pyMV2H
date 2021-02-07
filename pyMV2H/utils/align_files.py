@@ -1,6 +1,7 @@
 from functools import reduce
 
 import numpy as np
+from tqdm import tqdm
 
 from pyMV2H.metrics import f1
 from pyMV2H.utils.music import Music
@@ -13,6 +14,7 @@ def align_files(provided_file: Music, transcription_file: Music):
     """
     Align based on DTW algorithm
     """
+
     from pyMV2H.metrics.mv2h import mv2h
 
     provided_file.read_if_needed()
@@ -26,14 +28,17 @@ def align_files(provided_file: Music, transcription_file: Music):
     for node in alignment_nodes:
         total += node.count
 
-    for node_aligment in alignment_nodes:
-        for j in range(node_aligment.count):
-            alignment = node_aligment.get_alignment(j)
-            shifted_music = transcription_file.align(provided_file, alignment)
-            candidate: MV2H = mv2h(provided_file, shifted_music)
-            if candidate > best:
-                best = candidate
-                best_music = shifted_music
+    with tqdm(total=total) as pbar:
+        for node_alignment in alignment_nodes:
+            for j in range(node_alignment.count):
+                alignment = node_alignment.get_alignment(j)
+                shifted_music = transcription_file.align(provided_file, alignment)
+                candidate: MV2H = mv2h(provided_file, shifted_music)
+                if candidate > best:
+                    best = candidate
+                    best_music = shifted_music
+                pbar.update()
+
     return best_music, best
 
 
