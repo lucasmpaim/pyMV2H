@@ -26,12 +26,12 @@ def convert_time(time: int, p_music, t_music, alignment, alignment_times) -> int
     p_next_anchor = len(p_notes)
     p_next_next_anchor = len(p_notes)
 
-    for index, _ in enumerate(alignment):
-        if alignment[index] != -1:
-            if alignment[index] == t_index:
+    for index, current_alignment in enumerate(alignment):
+        if current_alignment != -1:
+            if current_alignment == t_index:
                 # This is the correct time, exactly on the index
                 return p_notes[index][0].on
-            elif alignment[index] < t_index:
+            elif current_alignment < t_index:
                 # The time is past this anchor
                 p_previous_previous_anchor = p_previous_anchor
                 p_previous_anchor = index

@@ -1,6 +1,3 @@
-from functools import lru_cache
-
-from pyMV2H.utils.freeze_args import freeze_args
 from pyMV2H.utils.algorithm_config import ONSET_DELTA, GROUPING_EPSILON
 from pyMV2H.utils.pojos import NOTE, GROUPING
 
@@ -34,8 +31,6 @@ def grouping_match(group_a: GROUPING, group_b: GROUPING) -> bool:
     )
 
 
-@freeze_args()
-@lru_cache(maxsize=128)
 def match_note_list(p_notes: list, t_notes: list) -> dict:
     match_notes = dict()
     t_notes_copy = list(t_notes)
