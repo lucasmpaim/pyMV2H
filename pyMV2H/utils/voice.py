@@ -31,8 +31,13 @@ class Voice:
     def __init__(self):
         self.__notes__ = list()
         self.__note_clusters__ = OrderedDict()
+        self.__connection_created__ = False
 
     def create_connections(self):
+
+        if self.__connection_created__:
+            return
+
         # remove all previous connections
         for cluster in self.__note_clusters__.values():
             cluster.next_clusters = list()
@@ -68,6 +73,7 @@ class Voice:
                         base_cluster.next_clusters.append(next_cluster)
                     else:
                         break
+        self.__connection_created__ = True
 
     def get_cluster(self, note: NOTE) -> Optional[NoteCluster]:
         key = (NoteCluster(note.on, note.off_val)).key_string

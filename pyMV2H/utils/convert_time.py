@@ -1,11 +1,7 @@
 
 def convert_time(time: int, p_music, t_music, alignment, alignment_times) -> int:
 
-    alignment_time = None
-
-    if time in alignment_times:
-        alignment_time = alignment_times[time]
-
+    alignment_time = alignment_times.get(time, None)
     if alignment_time is not None:
         return alignment_time
 

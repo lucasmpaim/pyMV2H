@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from pyMV2H.utils.convert_time import convert_time
 from pyMV2H.utils.comparators import note_comparator
 from pyMV2H.utils.pojos import NOTE, TATUM, KEY, HIERARCHY
@@ -32,6 +34,7 @@ class Music:
         self.__duration__ = 0.
         self.__voices__ = list()
         self.__post_process__()
+        self.__notes_list__ = list()
 
     def read_if_needed(self):
         if not self.__has_read__:
@@ -44,6 +47,7 @@ class Music:
         self.__hierarchy__ = list()
         self.__voices__ = list()
         self.__duration__ = 0.
+        self.__notes_list__ = list()
 
         with open(self.__file_name__, 'r') as file:
             all_lines = file.readlines()
@@ -92,6 +96,10 @@ class Music:
 
     @need_read
     def get_notes_grouped_by_onset(self):
+
+        if len(self.__notes_list__) != 0:
+            return self.__notes_list__
+
         notes = list()
 
         most_recent_list = list()
@@ -107,6 +115,7 @@ class Music:
                 most_recent_value_onset_time = note.on
                 most_recent_list.append(note)
                 notes.append(most_recent_list)
+        self.__notes_list__ = notes
         return notes
 
     def __post_process__(self):
