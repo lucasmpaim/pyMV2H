@@ -144,51 +144,43 @@ class Music:
             voice.create_connections()
 
     def align(self, p_music, alignment: list):
-        new_notes = list()
         align_times = dict()
 
         # Convert each note into a new note
-        for note in self.__notes__:
-            new_notes.append(
-                NOTE(
-                    note.pitch,
-                    convert_time(note.on, p_music, self, alignment, align_times),
-                    convert_time(note.on_val, p_music, self, alignment, align_times),
-                    convert_time(note.off_val, p_music, self, alignment, align_times),
-                    note.voice
-                )
-            )
+        new_notes = [
+            NOTE(
+                note.pitch,
+                convert_time(note.on, p_music, self, alignment, align_times),
+                convert_time(note.on_val, p_music, self, alignment, align_times),
+                convert_time(note.off_val, p_music, self, alignment, align_times),
+                note.voice
+            ) for note in self.__notes__
+        ]
 
         # Convert each hierarchy
-        new_hierarchies = list()
-        for hierarchy in self.__hierarchy__:
-            new_hierarchies.append(
-                HIERARCHY(
-                    hierarchy.bpb,
-                    hierarchy.sbpb,
-                    hierarchy.tpsb,
-                    hierarchy.al,
-                    convert_time(hierarchy.time, p_music, self, alignment, align_times),
-                )
-            )
+        new_hierarchies = [
+            HIERARCHY(
+                hierarchy.bpb,
+                hierarchy.sbpb,
+                hierarchy.tpsb,
+                hierarchy.al,
+                convert_time(hierarchy.time, p_music, self, alignment, align_times),
+            ) for hierarchy in self.__hierarchy__
+        ]
 
         # Convert each tatum
-        new_tatums = list()
-        for tatum in self.__tatums__:
-            new_tatums.append(
-                TATUM(
-                    convert_time(tatum.time, p_music, self, alignment, align_times),
-                )
-            )
+        new_tatums = [
+            TATUM(
+                convert_time(tatum.time, p_music, self, alignment, align_times),
+            ) for tatum in self.__tatums__
+        ]
 
-        new_keys = list()
-        for key in self.__keys__:
-            new_keys.append(
-                KEY(
-                    key.tonic,
-                    key.is_major,
-                    convert_time(key.time, p_music, self, alignment, align_times),
-                )
-            )
+        new_keys = [
+            KEY(
+                key.tonic,
+                key.is_major,
+                convert_time(key.time, p_music, self, alignment, align_times),
+            ) for key in self.__keys__
+        ]
 
         return Music(new_tatums, new_keys, new_notes, new_hierarchies)

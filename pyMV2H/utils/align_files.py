@@ -91,8 +91,8 @@ def _get_align_matrix(provided_file: Music, transcription_file: Music):
     ARRAY_SIZE = (len(provided_notes) + 1, len(transcription_notes) + 1)
 
     previous_cells = create_list_of_size(ARRAY_SIZE[0], lambda: create_list_of_size(ARRAY_SIZE[1], list))
-    distances = create_list_of_size(ARRAY_SIZE[0], lambda: create_list_of_size(ARRAY_SIZE[1], 0))
-    distances[0] = create_list_of_size(ARRAY_SIZE[1], math.inf)
+    distances = [[0 for _ in range(ARRAY_SIZE[1])] for _ in range(ARRAY_SIZE[0])] # create_list_of_size(ARRAY_SIZE[0], lambda: create_list_of_size(ARRAY_SIZE[1], 0))
+    distances[0] = [math.inf] * ARRAY_SIZE[1]
     distances[0][0] = 0.
 
     for i in range(1, ARRAY_SIZE[0]):
@@ -142,8 +142,7 @@ def get_distance(p_note_map, t_note_map):
     true_positives = 0
     false_positives = 0
 
-    for t_key in t_note_map.keys():
-        count = t_note_map[t_key]
+    for t_key, count in t_note_map.items():
         if t_key in p_note_map:
             p_count = p_note_map[t_key]
             true_positives += min(count, p_count)
@@ -155,7 +154,7 @@ def get_distance(p_note_map, t_note_map):
     if true_positives == 0:
         return 1.0
 
-    p_count = reduce(lambda a, b: a + b, p_note_map.values(), 0)
+    p_count = sum(p_note_map.values())
     false_negatives = p_count - true_positives
     return 1 - f1.f1_score(true_positives, false_positives, false_negatives)
 
@@ -169,10 +168,6 @@ def create_list_of_size(size: int, value) -> list:
     :param value: lambda function to initialize the value
     :return: the list of size x with all elements equal to return of value
     """
-    list_to_return = list()
-    for _ in range(size):
-        if callable(value):
-            list_to_return.append(value())
-        else:
-            list_to_return.append(value)
-    return list_to_return
+    return [
+        value() if callable(value) else value for _ in range(size)
+    ]

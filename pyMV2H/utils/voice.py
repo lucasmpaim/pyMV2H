@@ -51,7 +51,7 @@ class Voice:
 
         ordered_notes = list(self.__notes__)
         ordered_notes.sort(key=note_comparator())
-        self.__notes__ = list(ordered_notes)
+        self.__notes__ = ordered_notes
         # create new connections
         for base_key in self.__note_clusters__.keys():
             base_cluster = self.__note_clusters__[base_key]
