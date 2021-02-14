@@ -47,6 +47,7 @@ def convert_time(time: int, p_music, t_music, alignment, alignment_times) -> int
                 else:
                     # This is the 2nd anchor for which we are past the time
                     p_next_next_anchor = index
+                    break
 
     if p_previous_anchor == -1 and p_next_anchor == len(p_notes):
         # Nothing was aligned
@@ -72,7 +73,7 @@ def convert_time(time: int, p_music, t_music, alignment, alignment_times) -> int
             )
     elif p_next_anchor == len(p_notes):
         # Time is after the last anchor. Use the previous rate.
-        if p_next_anchor == len(p_notes):
+        if p_previous_anchor != -1:
             alignment_time = _convert_time(
                 time,
                 p_previous_previous_anchor,
