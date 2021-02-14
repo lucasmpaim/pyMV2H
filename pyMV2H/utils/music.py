@@ -134,11 +134,10 @@ class Music:
             # add note to voice
             self.__voices__[note.voice].add_note(note)
 
-        for key in self.__keys__:
-            self.__duration__ = max(self.__duration__, key.time)
-
-        for tatum in self.__tatums__:
-            self.__duration__ = max(self.__duration__, tatum.time)
+        if len(self.__keys__) > 0:
+            self.__duration__ = max(self.__duration__, max(self.__keys__, key=lambda item: item.time).time)
+        if len(self.__tatums__) > 0:
+            self.__duration__ = max(self.__duration__, max(self.__tatums__, key=lambda item: item.time).time)
 
         for voice in self.__voices__:
             voice.create_connections()

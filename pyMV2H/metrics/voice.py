@@ -12,8 +12,8 @@ def voice_score(p_music: Music, t_music: Music, return_match_mapping=False):
     p_music.read_if_needed()
     t_music.read_if_needed()
 
-    provided_voices = create_list_of_size(len(p_music.__voices__), lambda: Voice())
-    transcription_voices = create_list_of_size(len(t_music.__voices__), lambda: Voice())
+    provided_voices = [Voice() for _ in range(len(p_music.__voices__))]
+    transcription_voices = [Voice() for _ in range(len(t_music.__voices__))]
     p_note_mapping = match_note_list(p_music.__notes__, t_music.__notes__)
 
     match_mapping = list()
