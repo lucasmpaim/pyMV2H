@@ -1,9 +1,13 @@
 """Tests for our `pyMV2H compare_files` subcommand."""
 
 
-from subprocess import PIPE, check_output
+from subprocess import PIPE, check_output, CalledProcessError
 from unittest import TestCase
 import os
+import tempfile
+
+from pyMV2H.utils.music import Music
+from pyMV2H.metrics.mv2h import mv2h, multi_pitch_accuracy
 
 
 class TestCompareFiles(TestCase):
@@ -14,12 +18,46 @@ class TestCompareFiles(TestCase):
         current_path = os.path.dirname(__file__)
         current_path = os.path.join(current_path, '../../')
 
-        cls._output_file = f'{current_path}/tests/input_files/output_java/output_test_cases.txt'
-        cls._transcription_dir = f'{current_path}/tests/input_files/transcription_files'
+        cls._output_file = f'{current_path}tests/input_files/output_java/output_test_cases.txt'
+        cls._transcription_dir = f'{current_path}tests/input_files/transcription_files'
         cls._replace_key = '${TRANSCRIPTION_DIR}'
 
     def test_if_file_exists(self):
         self.assertTrue(os.path.isfile(self._output_file), 'Can\'t find the output_file')
+
+    def test_same_music_midi_should_return_a_perfect_match(self):
+      midi_file = os.path.join(self._transcription_dir, 'Bach-846p-orig.mid.txt')
+      music_a = Music.from_file(midi_file)
+      music_b = Music.from_file(midi_file)
+      result = mv2h(music_a, music_b)
+      self.assertEqual(result.mv2h, 1.)
+
+    def test_f0_output_export_file_correctly(self):
+        midi_file = os.path.join(self._transcription_dir, 'Bach-846p-orig.mid.txt')
+        music_a = Music.from_file(midi_file)
+        music_a.read_if_needed()
+        music_b = Music.from_file(midi_file)
+        music_b.read_if_needed()
+
+        _, path = tempfile.mkstemp(suffix='.mv2h')
+        line_prefix = 'Bach-846p-orig'
+        accuracy = multi_pitch_accuracy(
+            music_a.__notes__,
+            music_b.__notes__,
+            details_line_prefix=line_prefix,
+            export_details_in_file=path
+        )
+
+        self.assertEqual(accuracy, 1.)
+
+        with open(path, 'r') as f:
+            lines = f.readlines()
+            self.assertTrue(len(lines) > 0, f'No lines in output file {path}')
+            for line in lines:
+                self.assertFalse(line.startswith(line_prefix) and line.endswith('tp'))
+
+        os.remove(path)
+
 
     def test_mv2h_output_from_python_and_java_should_be_equal(self):
 
@@ -51,11 +89,16 @@ class TestCompareFiles(TestCase):
 
         print('*' * 30)
         print(f'Running: {command_line}')
-        output = check_output(
-            command_line.split(' '),
-            stderr=PIPE,
-            timeout=60
-        )
+        try:
+            output = check_output(
+                command_line.split(' '),
+                stderr=PIPE,
+                timeout=60
+            )
+        except CalledProcessError as e:
+            raise RuntimeError("command '{}' return with error (code {}): {}".format(e.cmd, e.returncode, e.output))
+
+
         lines = output.split('\n'.encode())
         python_version_metrics = self.parse_pymv2h_output(lines)
         for metric_name in metrics.keys():
